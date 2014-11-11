@@ -15,6 +15,11 @@ CANVAS_SIZE = (20, 20)
 plt.figure(figsize=CANVAS_SIZE)
 
 class HofstedeHierarchy(object):
+    '''ホフステッド指数を階層的クラスタリングするクラス
+
+    :param str data_path: ホフステッド指数が格納されたCSVファイルパス
+    :param int data_name_column_idx: 国名が入ったカラムインデックス
+    '''
 
     LIST_DATA_COLUMN = ["PDI", "IDV", "MAS", "UAI"]#, "LTO", "IVR"]
     FILE_NAME_COLUMN= "file"
@@ -30,6 +35,7 @@ class HofstedeHierarchy(object):
         self.all_data = pandas.read_csv(data_path)
         self.hofstede_data = numpy.array(self.all_data[self.LIST_DATA_COLUMN],
                                         dtype=numpy.float64)
+        #: 標準化
         ss = StandardScaler()
         self.hofstede_data = ss.fit_transform(self.hofstede_data)
         self.data_name = self.all_data.ix[:, data_name_column_idx]
@@ -39,16 +45,22 @@ class HofstedeHierarchy(object):
     def show(self,
              distance_metric='euclidean',
              linkage_method='ward'):
+        '''階層的クラスタリング表示関数
+        '''
 
+        #: 指定の手法で階層的クラスタリング
         cluster = hierarchy.linkage(self.hofstede_data,
                                     method=linkage_method,
                                     metric=distance_metric)
+
+        #: 樹形図作成
         hierarchy.dendrogram(cluster,
                              orientation='left',
                              color_threshold=150,
                              labels=numpy.array(self.data_name),
                              leaf_font_size=18)
         
+        #: 日本を赤くするためのおまじない
         ax = plt.gca()
         xlbls = ax.get_ymajorticklabels()
         for lbl in xlbls:

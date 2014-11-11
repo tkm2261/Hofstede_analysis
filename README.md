@@ -2,5 +2,7 @@
 
 <http://blog.brainpad.co.jp/>
 
-* バイプロット
-* 階層的クラスタリング
+* バイプロット (biplot.py)
+* 階層的クラスタリング (hierarchical_clustering.py)
+
+データ同じなので継承使った方が良さ気ですが、面倒なので2ファイルになっています。
